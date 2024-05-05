@@ -26,31 +26,44 @@ Built with a focus on performance and security, Calicot Echères aims to revolut
 
 ## Code Structure
 
-The codebase is organized as follows:
+The directory structure for the Calicot Echères application is as follows:
 
-- `src/`: This is the main folder containing all the source code of the application.
-  - `components/`: This folder contains all the React components used in the application.
-  - `services/`: This folder contains services like API calls and utility functions.
-  - `assets/`: This folder contains static files like images and stylesheets.
-  - `App.js`: This is the main file where the application starts.
+- `.vscode`: This directory is used by Visual Studio Code to store project-specific settings.
 
-- `public/`: This folder contains the index.html file and other public assets.
+- `Auctions`: This is the main directory for the application.
 
-- `tests/`: This folder contains all the test files.
+- `Areas`: In ASP.NET Core, areas are used to partition a large application into smaller, more manageable pieces. The `Identity` area likely contains code related to user authentication and authorization.
 
-- `package.json`: This file contains the list of npm dependencies.
+- `bin`: This directory contains the compiled output of the project.
 
-- `.env`: This file contains environment variables.
+- `Controllers`: This directory contains the controller classes responsible for handling user input in an MVC (Model-View-Controller) application.
 
-- `.gitignore`: This file specifies the files and folders ignored by Git.
+- `Data`: This directory contains code related to data access, including database context classes, migrations, and data services.
 
-- `README.md`: This file provides an overview of the project, its features, and how to set up and run the application.
+- `Models`: This directory contains classes that represent the data in the application.
 
-## Installation
+- `obj`: This directory contains temporary files used by the .NET build system.
 
-Provide step by step series of examples and explanations about how to get a development environment running.
+- `Properties`: This directory typically contains the `launchSettings.json` file, which configures the settings for running the application.
 
-```bash
-git clone <repository>
-cd <repository>
-npm install
+- `Views`: This directory contains the Razor view files, which are used to generate the HTML that is sent to the client.
+
+- `wwwroot`: This directory contains static files, such as CSS, JavaScript, and images. The `lib` subdirectory contains libraries like Bootstrap and jQuery.
+
+The `bin` and `obj` directories contain subdirectories for different languages, which are likely related to localization of system messages in those languages. The `runtimes` directory contains platform-specific native code.
+
+## Framework list and dependancies
+
+### Framework
+
+- .NET 7.0
+
+### Dependencies
+
+- Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 7.0.5
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore 7.0.5
+- Microsoft.AspNetCore.Identity.UI 7.0.5
+- Microsoft.EntityFrameworkCore.SqlServer 7.0.10
+- Microsoft.EntityFrameworkCore.InMemory 7.0.10
+- Microsoft.EntityFrameworkCore.Tools 7.0.10
+- Microsoft.VisualStudio.Web.CodeGeneration.Design 7.0.

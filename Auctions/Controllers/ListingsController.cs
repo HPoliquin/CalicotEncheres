@@ -22,7 +22,7 @@ namespace Auctions.Controllers
         public ListingsController(IListingsService listingsService, IWebHostEnvironment webHostEnvironment, IBidsService bidsService, ICommentsService commentsService)
         {
             _listingsService = listingsService;
-            _webHostEnvironment = webHostEnvironment;  
+            _webHostEnvironment = webHostEnvironment;
             _bidsService = bidsService;
             _commentsService = commentsService;
         }
@@ -30,9 +30,9 @@ namespace Auctions.Controllers
         // GET: Listings
         public async Task<IActionResult> Index(int? pageNumber, string searchString)
         {
-            var applicationDbContext = _listingsService.GetAll();         
+            var applicationDbContext = _listingsService.GetAll();
             int pageSize = 3;
-            if(!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 applicationDbContext = applicationDbContext.Where(a => a.Title.Contains(searchString));
                 return View(await PaginatedList<Listing>.CreateAsync(applicationDbContext.Where(l => l.IsSold == false), pageNumber ?? 1, pageSize));
@@ -44,9 +44,9 @@ namespace Auctions.Controllers
         public async Task<IActionResult> MyListings(int? pageNumber)
         {
             var applicationDbContext = _listingsService.GetAll();
-            int pageSize = 3;          
+            int pageSize = 3;
 
-            return View("Index", await PaginatedList<Listing>.CreateAsync(applicationDbContext.Where(l =>l.IdentityUserId == User.FindFirstValue(ClaimTypes.NameIdentifier)), pageNumber ?? 1, pageSize));
+            return View("Index", await PaginatedList<Listing>.CreateAsync(applicationDbContext.Where(l => l.IdentityUserId == User.FindFirstValue(ClaimTypes.NameIdentifier)), pageNumber ?? 1, pageSize));
         }
         public async Task<IActionResult> MyBids(int? pageNumber)
         {
@@ -76,7 +76,7 @@ namespace Auctions.Controllers
 
         // GET: Listings/Create
         public IActionResult Create()
-        {         
+        {
             return View();
         }
 
@@ -87,7 +87,7 @@ namespace Auctions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ListingVM listing)
         {
-           if(listing.Image != null) 
+            if (listing.Image != null)
             {
                 string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
                 string fileName = listing.Image.FileName;
@@ -101,7 +101,7 @@ namespace Auctions.Controllers
                 {
                     Title = listing.Title,
                     Description = listing.Description,
-                    Price = listing.Price,                   
+                    Price = listing.Price,
                     IdentityUserId = listing.IdentityUserId,
                     ImagePath = fileName,
                 };
@@ -113,13 +113,23 @@ namespace Auctions.Controllers
         [HttpPost]
         public ActionResult AddBid([Bind("Id, Price, ListingId, IdentityUserId")] Bid bid)
         {
-            if(ModelState.IsValid) 
+            var listing = _listingsService.GetById(bid.ListingId);
+            if (listing == null)
+            {
+                return NotFound();
+            }
+
+            if (bid.Price < listing.Result.Price)
+            {
+                ModelState.AddModelError("Price", "Bid must be at least the current item price.");
+                return View("Details", listing.Result);
+            }
+            else if (ModelState.IsValid)
             {
                 _bidsService.Add(bid);
+                listing.Result.Price = bid.Price;
+                _listingsService.SaveChanges();
             }
-            var listing = _listingsService.GetById(bid.ListingId);
-            listing.Result.Price = bid.Price;
-            _listingsService.SaveChanges();
 
             return View("Details", listing.Result);
         }
@@ -133,13 +143,20 @@ namespace Auctions.Controllers
         [HttpPost]
         public async Task<ActionResult> AddComment([Bind("Id, Content, ListingId, IdentityUserId")] Comment comment)
         {
-            if(ModelState.IsValid) 
-            {
-                await _commentsService.Add(comment);
-            }
             var listing = await _listingsService.GetById(comment.ListingId);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _commentsService.Add(comment);
+                }
+                catch (System.Exception)
+                {
+                    ModelState.AddModelError("", "An error occurred while adding a comment.");
+                }
+            }
+
             return View("Details", listing);
         }
-        
     }
 }
