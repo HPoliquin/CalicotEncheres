@@ -1,5 +1,6 @@
 ﻿using Auctions.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace Auctions.Controllers
@@ -7,7 +8,6 @@ namespace Auctions.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -26,7 +26,9 @@ namespace Auctions.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorViewModel = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
+            _logger.LogError($"Error occurred. Request ID: {errorViewModel.RequestId}"); // Log the error
+            return View(errorViewModel);
         }
     }
 }

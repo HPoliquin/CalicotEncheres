@@ -19,12 +19,15 @@ namespace Auctions.Controllers
         private readonly ICommentsService _commentsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ListingsController(IListingsService listingsService, IWebHostEnvironment webHostEnvironment, IBidsService bidsService, ICommentsService commentsService)
+        private readonly ILogger<ListingsController> _logger;
+
+        public ListingsController(IListingsService listingsService, IWebHostEnvironment webHostEnvironment, IBidsService bidsService, ICommentsService commentsService, ILogger<ListingsController> logger)
         {
             _listingsService = listingsService;
             _webHostEnvironment = webHostEnvironment;
             _bidsService = bidsService;
             _commentsService = commentsService;
+            _logger = logger;
         }
 
         // GET: Listings
@@ -119,9 +122,10 @@ namespace Auctions.Controllers
                 return NotFound();
             }
 
-            if (bid.Price < listing.Result.Price)
+            // La nouvelle mise doit être supérieure à la mise actuelle
+            if (bid.Price <= listing.Result.Price)
             {
-                ModelState.AddModelError("Price", "Bid must be at least the current item price.");
+                ModelState.AddModelError("Price", "Bid must be higher than the current item price or bid.");
                 return View("Details", listing.Result);
             }
             else if (ModelState.IsValid)
@@ -150,9 +154,10 @@ namespace Auctions.Controllers
                 {
                     await _commentsService.Add(comment);
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
                     ModelState.AddModelError("", "An error occurred while adding a comment.");
+                    _logger.LogError(ex, "An error occurred while adding a comment."); // Log the error
                 }
             }
 

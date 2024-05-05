@@ -22,8 +22,8 @@ if(builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options => {
         options.UseInMemoryDatabase("AuctionsDatabase"); 
-        //options.LogTo(_logStream.WriteLine, Microsoft.Extensions.Logging.LogLevel.Trace);
-        //options.EnableSensitiveDataLogging();
+        options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
+        options.EnableSensitiveDataLogging();
     }); 
 }
 else

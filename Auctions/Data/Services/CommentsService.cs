@@ -14,6 +14,11 @@ namespace Auctions.Data.Services
 
         public async Task Add(Comment comment)
         {
+            if (comment == null)
+            {
+                throw new ArgumentNullException(nameof(comment));
+            }
+            
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
         }

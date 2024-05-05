@@ -8,7 +8,7 @@ namespace Auctions.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {            
+        {
         }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Bid> Bids { get; set; }

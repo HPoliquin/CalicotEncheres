@@ -147,40 +147,37 @@ namespace Auctions.Data
 
             if (!context.Listings.Any())
             {
-                context.Listings.AddRange(
+                // Define the listings to be added
+                var listings = new List<Listing>
+                {
                     new Listing
-                        {
-                            Title = "Xbox 360",
-                            Description = "Xbox 360 usagée mais en excellente condition, avec 2 manettes et 5 jeux.",
-                            Price = 199,
-                            ImagePath = "xbox360.jpg",
-                            IdentityUserId = identityUserAdmin?.Id
-                        },
-                        new Listing
-                        {
-                            Title = "iPhone 15 Pro",
-                            Description = "iPhone 15 Pro, 256GB, couleur or rose, en excellente condition.",
-                            Price = 699,
-                            ImagePath = "iphone-15-pro.jpg",
-                            IdentityUserId = identityUserAdmin?.Id
-                        },
-                        new Listing
-                        {
-                            Title = "MacBook Air M2",
-                            Description = "MacBook Air 13 pouces, M2, CPU 10 coeurs, 16Go RAM, 512Go SSD, en excellente condition.",
-                            Price = 1199,
-                            ImagePath = "macbook-air-13.jpg",
-                            IdentityUserId = identityUserAdmin?.Id
-                        },
-                        new Listing
-                        {
-                            Title = "Samsung Galaxy Watch 5",
-                            Description = "Montre intelligente Samsung Galaxy Watch 5, jamais utilisée, dans sa boîte.",
-                            Price = 375,
-                            ImagePath = "samsung-galaxy-watch5.jpg",
-                            IdentityUserId = identityUserAdmin?.Id
-                        }
-                );
+                    {
+                        Title = "iPhone 15 Pro",
+                        Description = "iPhone 15 Pro, 256GB, couleur or rose, en excellente condition.",
+                        Price = 699,
+                        ImagePath = "iphone-15-pro.jpg",
+                        IdentityUserId = identityUserAdmin?.Id
+                    },
+                    new Listing
+                    {
+                        Title = "MacBook Air M2",
+                        Description = "MacBook Air 13 pouces, M2, CPU 10 coeurs, 16Go RAM, 512Go SSD, en excellente condition.",
+                        Price = 1199,
+                        ImagePath = "macbook-air-13.jpg",
+                        IdentityUserId = identityUserAdmin?.Id
+                    },
+                    new Listing
+                    {
+                        Title = "Samsung Galaxy Watch 5",
+                        Description = "Montre intelligente Samsung Galaxy Watch 5, jamais utilisée, dans sa boîte.",
+                        Price = 375,
+                        ImagePath = "samsung-galaxy-watch5.jpg",
+                        IdentityUserId = identityUserAdmin?.Id
+                    }
+                };
+
+                // Add the listings to the context
+                context.AddRange(listings);
             }
 
             // ############################  save changes  ############################
